@@ -6,19 +6,19 @@ int main()
 {
 	setlocale(LC_ALL, "Russian");
 	float a = 0, b = 0;
-	float x = 0, y = 0, z = 0, three = 3;
+	float x = 0, y = 0, z = 0, three = 3, two = 2, one = 1, buf;
 
-	cout << "Введите x = "; cin >> x; cout << "\n";
-	cout << "Введите y = "; cin >> y; cout << "\n";
+	cout << "Введите x = "; cin >> x;
+	cout << "Введите y = "; cin >> y;
 	cout << "Введите z = "; cin >> z; cout << "\n";
-
-	cout << endl << endl << endl;
 
 	_asm
 	{
 		fld[y] // st(2) = y
 		fld[three] // st(1) = three
 		fld[x] //st(0) = x
+
+		// Вычислим значение a
 
 		fst st(3) // st(0) -> st(3)
 		fmul st(0), st(0) // x*x
@@ -43,7 +43,19 @@ int main()
 		fstp st(2)
 		fld[y]
 		fadd st(0), st(2)
-		fst[a]
+		fstp[a]
+
+		// Вычислим значение b
+
+		fld[one] // st(2) = one
+		fld[two] // st(1) = two
+		fld[z] // st(0) = z
+		fdiv st(0), st(1)
+		fptan // st(0) = 1.0, st(1) = tg(st(0))
+		fstp [buf] // освобождаем вершину стека
+		fmul st(0), st(0)
+		fadd st(0), st(2)
+		fst [b]
 	}
 
 	cout << "a = " << a << endl;
